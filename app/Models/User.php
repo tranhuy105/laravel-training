@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -27,7 +29,7 @@ class User extends Authenticatable
     //     'last_name',
     // ];
 
-    protected $guarded = ['is_admin', 'is_active', 'username', 'first_name', 'last_name'];
+    protected $guarded = ['is_admin', 'id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -48,4 +50,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function tasks(): HasMany {
+        return $this->hasMany(Task::class);
+    }
+
+    public function roles(): BelongsToMany {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
 }
