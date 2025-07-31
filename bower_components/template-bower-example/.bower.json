@@ -1,0 +1,14 @@
+{
+  "name": "template-bower-example",
+  "homepage": "https://github.com/tranhuy105/template-bower-example",
+  "_release": "18214e88f6",
+  "_resolution": {
+    "type": "branch",
+    "branch": "main",
+    "commit": "18214e88f6e41494a99eda7fa25da45b0f7b8beb"
+  },
+  "_source": "https://github.com/tranhuy105/template-bower-example.git",
+  "_target": "main",
+  "_originalSource": "tranhuy105/template-bower-example",
+  "_direct": true
+}
