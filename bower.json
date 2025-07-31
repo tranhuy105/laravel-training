@@ -1,0 +1,21 @@
+{
+  "name": "laravel-training",
+  "description": "",
+  "main": "",
+  "authors": [
+    "tranhuy105 <imhuy105@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/tranhuy105/laravel-training",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "template-bower-example": "tranhuy105/template-bower-example#main"
+  }
+}
