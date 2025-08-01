@@ -12,7 +12,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return view('users.index', [
+            'users' => User::all()
+        ]);
     }
 
     /**
@@ -44,7 +46,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -52,7 +54,19 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'is_active' => 'boolean',
+        ]);
+        
+        $validated['is_active'] = $request->has('is_active');
+        $validated['name'] = $request->first_name . ' ' . $request->last_name;
+        $user->update($validated);
+        
+        return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 
     /**
