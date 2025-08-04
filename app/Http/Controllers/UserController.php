@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -12,9 +14,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('users.index', [
-            'users' => User::all()
-        ]);
+        // Eager loading: load the 'tasks' relationship with each user
+        $users = User::with('tasks')->get();
+        
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -22,15 +25,24 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        //
+        $validated = $request->validated();
+        
+        // Set is_active as boolean and combine first_name and last_name
+        $validated['is_active'] = $request->has('is_active');
+        $validated['name'] = $request->first_name . ' ' . $request->last_name;
+        
+        // Create a new user using Eloquent
+        User::create($validated);
+        
+        return redirect()->route('users.index')->with('success', 'User created successfully');
     }
 
     /**
@@ -38,7 +50,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        // Eager load the tasks relationship
+        $user->load('tasks');
+        
+        return view('users.show', compact('user'));
     }
 
     /**
@@ -52,18 +67,14 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'is_active' => 'boolean',
-        ]);
+        $validated = $request->validated();
         
         $validated['is_active'] = $request->has('is_active');
         $validated['name'] = $request->first_name . ' ' . $request->last_name;
+        
+        // Update user with Eloquent
         $user->update($validated);
         
         return redirect()->route('users.index')->with('success', 'User updated successfully');
@@ -74,6 +85,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        // Using Eloquent to delete the user
+        $user->delete();
+        
+        return redirect()->route('users.index')->with('success', 'User deleted successfully');
     }
 }
